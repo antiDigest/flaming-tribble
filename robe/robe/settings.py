@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tribble',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -52,10 +53,11 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'robe.urls'
 
+SETTINGS_PATH = os.path.normpath(os.path.dirname(__file__))
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(SETTINGS_PATH, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,11 +79,12 @@ WSGI_APPLICATION = 'robe.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        'HOME': '/var/run/mysql',
         'NAME': 'flamingtribble',
         'USER': 'root',
         'PASSWORD': 'tribble',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
