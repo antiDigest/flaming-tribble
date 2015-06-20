@@ -1,11 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
 <head>
-    <title>My Home Page</title>           
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css" media="screen" />
- 
+    <title>Tribble | Home</title>
+    {% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" media='screen'/>   
+ 	
 </head>
-<body>
-<p>My Content</p>    
+<body> 
+<h1 style="color:#333">TRENDING WORDS</h1>
 </body>
 </html>

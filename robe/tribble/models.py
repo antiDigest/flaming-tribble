@@ -5,7 +5,7 @@ class Words(models.Model):
     word = models.CharField(max_length=200)
     genericity = models.BooleanField()
     frequency = models.IntegerField(default=0)
-    trend = models.IntegerField(range(1,5), default=3)
+    trend = models.IntegerField(range(1,3), default=3)
 
 class Searched(models.Model):
     word = models.CharField(max_length=200)

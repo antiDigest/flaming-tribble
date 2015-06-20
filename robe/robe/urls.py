@@ -19,5 +19,6 @@ from tribble import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'tribble.views.index')
+    url(r'^', 'tribble.views.index'),
+    url(r'(?:.*?/)?(?P<path>(css|js|images)/.+)$', 'django.views.static.serve'),
 ]
