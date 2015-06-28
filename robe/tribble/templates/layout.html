@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html prefix="og: http://ogp.me/ns#" lang="en-US"><head>
+  {% load staticfiles %}
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="{% static 'css/style.css'%}" type="text/css" media="screen">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}" type="text/css" media="screen">
+  <script language="javascript" type="text/javascript" src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+  <script language="javascript" type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+  <title>Find Out What's Trending | Flaming Tribble </title>
+
+
+
+</head>
+<body class="main">
+
+<script type="text/javascript">
+
+function over() {
+  x = document.getElementById("overlay");
+  x.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+  y = document.getElementById("page-1");
+  y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+</script>
+
+
+<!--Home Start-->
+<section class="feature-section fluid top-section" id="page-1">
+        <div class="ui-works" href="#" onclick="over()">
+                <i style="color: rgb(0, 0, 0); fill: rgb(0, 0, 0); border-color: rgb(0, 0, 0); background-color: rgb(0, 0, 0);" class="ui-works__square ui-works__square_1"></i>
+                <i style="color: rgb(0, 0, 0); fill: rgb(0, 0, 0); border-color: rgb(0, 0, 0); background-color: rgb(0, 0, 0);" class="ui-works__square ui-works__square_2"></i>
+                <i style="color: rgb(0, 0, 0); fill: rgb(0, 0, 0); border-color: rgb(0, 0, 0); background-color: rgb(0, 0, 0);" class="ui-works__square ui-works__square_3"></i>
+                <i style="color: rgb(0, 0, 0); fill: rgb(0, 0, 0); border-color: rgb(0, 0, 0); background-color: rgb(0, 0, 0);" class="ui-works__square ui-works__square_4"></i>
+          </div>
+
+              {% block content %}{% endblock %}
+              
+
+    <footer>
+        <div class="footer-bottom">
+           <div class="footer" ><a href='#' style="text-decoration:none" target="_blank" style="color:#fff">© copyright with Antriksh, a Make Me Starr Initiative </a>  &nbsp;&nbsp;  
+            <!--<a href="disclaimer.php">DISCLAIMER</a>   &nbsp;|&nbsp; --> 
+            <a href = '#' style="text-align:right">|&nbsp;&nbsp; 
+              <a href="#" style="text-align:right; text-decoration:none" onclick="ga('send', 'event', 'pripol', 'Click', 'pripol-button');">PRIVACY POLICY</a> &nbsp;&nbsp;    
+              <a href='#' style="text-align:right; text-decoration:none" onclick="ga('send', 'event', 'Repab', 'Click', 'repab-button');">|&nbsp;&nbsp;REPORT ABUSE</a>
+            </a>
+        </div></div>
+        </footer>
+    </section>
+
+    <section>
+      <div  id="overlay">
+              <img href="#" class="close" src="{% static 'images/close_overlay.png'%}" onclick="over()" >
+                  <div class="box">
+                    <a href="{% url 'home' %}" class="overlay_box overlay_box_1" >
+                            <div class="header">HOME</div>
+                            <img src="{% static 'images/home.png'%}">
+                        </a>
+                    <a href="{% url 'trend' %}" class="overlay_box overlay_box_3">
+                            <div class="header">VIEW TRENDING</div>
+                            <img src="{% static 'images/view.png'%}">
+                        </a>
+                    <a href="{% url 'search' %}" class="overlay_box overlay_box_2">
+                            <div class="header">SEARCH</div>
+                            <img src="{% static 'images/search.png'%}">
+                        </a>
+                    <a href="{% url 'stats' %}" class="overlay_box overlay_box_4">
+                            <div class="header">MY STATISTICS</div>
+                            <img src="{% static 'images/stats.png'%}">
+                        </a>
+                  </div>
+              </div>
+    </section>
+    
+</body>
+
+</html>

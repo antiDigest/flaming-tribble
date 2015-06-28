@@ -1,12 +1,23 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html lang="en">
-<head>
-    <title>Tribble | Home</title>
-    {% load staticfiles %}
-		<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" media='screen'/>   
- 	
-</head>
-<body> 
-<h1 style="color:#333">TRENDING WORDS</h1>
-</body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+          <div><br></div>
+          <div><br></div>
+
+          <div><br></div>
+            <div>
+                <h1> <br>
+                  <span class="typer-line" >What’s Trending ?</span>
+                  <br>
+                     
+                    </h1>
+              </div>
+            <div class="action">
+              <div  id="search_button">
+                <p>
+                    <a href="#" class="button">I don't know, show me ! </a>
+                    <a href="{% url 'search' %}" class="button">SEARCH</a>
+                </p>
+              </div>
+            </div>
+              
+{% endblock %}
