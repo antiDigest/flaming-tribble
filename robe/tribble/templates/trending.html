@@ -1,14 +1,40 @@
 {% extends "layout.html" %}
 {% block content %}
-          <div><br></div>
-          <div><br></div>
-
-          <div><br></div>
+<head>
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'css/search.css'%}" type="text/css" media="screen">
+  <style type="text/css">
+    body{
+      background-image: url("{% static 'images/trending_pg.jpg' %}")
+    }
+  </style>
+</head>
             <div>
-                <h1> <br>
-                  <span class="typer-line">TRENDING</span>
+                <h1> 
+                  <nav class="">Let's see the Trend ...</nav>
                   <br>
                      
                     </h1>
               </div>
+              <br>
+
+
+              <table class='heading'>
+               <tr>
+                 <th class='trend_keyword trend'>Keyword(s)</th>
+                 <th class="trend_location trend">Location</th>
+                 <th class="trend_value trend">How Trending ?</th>
+               </tr>
+             </table>
+              {% for i in 'hellomissingme?' %}
+            <div class='display_box'>
+             <table>
+               <tr>
+                 <td class='trend_keyword trend'>{{ i }}</td>
+                 <td class="trend_location trend">India</td>
+                 <td class="trend_value trend">HOT</td>
+               </tr>
+             </table>
+            </div>
+            {% endfor %}
 {% endblock %}
