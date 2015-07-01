@@ -9,16 +9,32 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views import generic
+from graphos.renderers import flot
+from graphos.sources.model import SimpleDataSource
 
+data =  [
+        ['Year', 'facebook', 'twitter', 'youtube'],
+        [2004, 1000, 400, 893],
+        [2005, 1170, 460, 837],
+        [2006, 660, 1120, 327],
+        [2007, 1030, 540, 1900]
+    ]
+	
 
-class HomeView(generic.TemplateView):
-	template_name='index.html'
+def home(request):
+	return render(request,'index.html')
 
-class SearchView(generic.TemplateView):
-	template_name='search.html'
+def search(request):
+	return render(request,'search.html')
 
-class StatsView(generic.TemplateView):
-	template_name='stats.html'
+def getchart():
+	print '__init__'
+	chart = flot.LineChart(SimpleDataSource(data=data))
+	return chart
 
-class TrendView(generic.TemplateView):
-	template_name='trending.html'
+def stats(request):
+	return render(request,'stats.html',{'chart':getchart()})
+	
+
+def trend(request):
+	return render(request,'trending.html')

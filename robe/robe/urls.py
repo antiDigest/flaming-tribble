@@ -19,9 +19,9 @@ from tribble import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', views.HomeView.as_view(), name='home' ),
+    url(r'^$', views.home, name='home' ),
     url(r'(?:.*?/)?(?P<path>(css|js|images)/.+)$', 'django.views.static.serve'),
-    url(r'^search/$', views.SearchView.as_view() , name='search' ),
-    url(r'^statistics/$', views.StatsView.as_view() , name='stats' ),
-    url(r'^whats_trending/$', views.TrendView.as_view() , name='trend' ),
+    url(r'^search$', views.search , name='search' ),
+    url(r'^statistics$', views.stats , name='stats' ),
+    url(r'^whats_trending$', views.trend , name='trend' ),
 ]

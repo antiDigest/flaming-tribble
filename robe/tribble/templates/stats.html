@@ -2,12 +2,18 @@
 {% block content1 %}
 {% load staticfiles %}
 <style type="text/css">
-</style>
+  	body{
+		background-image: url("{% static 'images/stats_page.jpg' %}");
+		background-size: auto;
+	}
+  </style>
+
+	<script src="{% static 'js/jquery.flot.js' %}"></script>
 
 <script type="text/javascript">
 
 var i=0;
-var slides = ["overlay1","overlay2","overlay3","overlay4"];
+var slides = ["page1","page2","page3","page4"];
 var bg = ["images/stats_page.jpg","images/fbstats.jpeg","images/ytstats.jpg","images/tstats.jpg"]
 
 function slide() {
@@ -18,8 +24,8 @@ function slide() {
 	  y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
 	  i = i+1;
 	  b = bg[i]
-	  document.body.style.backgroundImage = "url({% static b %})";
-	  document.body.style.backgroundSize = "cover";
+	  // document.body.style.backgroundImage = "url({% static b %})";
+	  // document.body.style.backgroundSize = "cover";
 	  
 	};
 }
@@ -31,8 +37,8 @@ function slideback() {
 	  y = document.getElementById(slides[i-1]);
 	  y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
 	  b = bg[i-1]
-	  document.body.style.backgroundImage = "url({% static b %})";
-	  document.body.style.backgroundSize = "cover";
+	  // document.body.style.backgroundImage = "url({% static b %})";
+	  // document.body.style.backgroundSize = "cover";
 	  i = i-1;
 	};
 }
@@ -40,46 +46,92 @@ function slideback() {
 </script>
 
 
-			<div id="overlay1" style="visibility:visible" class="overlay">
-                <h1> <br>
-                  <span>STATISTICS</span>
-                  <br>
-                     
-                    </h1>
+			<div id="page1" style="visibility:visible" class="page">
+				<div class='chart'>{{ chart.as_html }}</div>
+            	
 
                     <div class="ui-nav ui-nav_next" onclick="slide()"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="67" viewBox="0 0 23 67"><path style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" fill-rule="evenodd" clip-rule="evenodd" fill="#fff" d="M22.604 33.453l-20.879-33.207-1.694 1.064 20.224 32.165-20.255 32.214 1.692 1.065 20.88-33.207-.059-.037z" ></path></svg></div>
               </div>
 
-              <div id="overlay2" style="visibility:hidden">
+              <div id="page2" style="visibility:hidden">
               <div class="ui-nav ui-nav_prev" onclick="slideback()"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="67" viewBox="0 0 23 67"><path style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" fill-rule="evenodd" clip-rule="evenodd" fill="#fff" d="M2.349 33.475l20.223-32.165-1.693-1.064-20.879 33.207.091.057-.059.037 20.879 33.207 1.693-1.065z" ></path></svg></div>
-                <h1> <br>
-                  <span>facebook</span>
-                  <br>
-                     
-                    </h1>
+              {% load ranges %}
+              {% for i in 5|get_range %}
+		        <div class='display_box'>
+					<table><tr>
+		               <tr>
+		               <td>{{ i }}. <a href="#" style="font-weight:bold;color:black">Post Title</a></td>
+		                 	</tr>
+		                 	<tr>
+		                 		<td>----Post text----</td>
+		                 	</tr>
+		                 	<tr>
+		                 		<td>----Link to post images or videos----</td>
+		                 		<td>[Other useful outputs]</td>
+		                 	</tr>
+		                 </td>
+		                 </tr>
+		             </table>
+				            </div>
+				{% endfor %}
+		                
                     <div class="ui-nav ui-nav_next" onclick="slide()"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="67" viewBox="0 0 23 67"><path style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" fill-rule="evenodd" clip-rule="evenodd" fill="#fff" d="M22.604 33.453l-20.879-33.207-1.694 1.064 20.224 32.165-20.255 32.214 1.692 1.065 20.88-33.207-.059-.037z" ></path></svg></div>
 
               </div>
 
-              <div id="overlay3" style="visibility:hidden" class="overlay">
+              <div id="page3" style="visibility:hidden" class="page">
               <div class="ui-nav ui-nav_prev" onclick="slideback()"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="67" viewBox="0 0 23 67"><path style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" fill-rule="evenodd" clip-rule="evenodd" fill="#fff" d="M2.349 33.475l20.223-32.165-1.693-1.064-20.879 33.207.091.057-.059.037 20.879 33.207 1.693-1.065z" ></path></svg></div>
-                <h1> <br>
-                  <span>YouTube</span>
-                  <br>
-                     
-                    </h1>
+
+              {% load ranges %}
+              {% for i in 5|get_range %}
+		        <div class='display_box' style="posotion:absolute">
+					<table><tr>
+		               <tr>
+		               <td>{{ i }}. <a href="#" style="font-weight:bold;color:black">Video Title</a></td>
+		                 	</tr>
+		                 	<tr>
+		                 		<td>----Post text----</td>
+		                 		<td>----posted video----</td>
+		                 	</tr>
+		                 	<tr>
+		                 		
+		                 		<td>[Other useful outputs]</td>
+		                 	</tr>
+		                 </td>
+		                 </tr>
+		             </table>
+				            </div>
+				{% endfor %}
+                
                     <div class="ui-nav ui-nav_next" onclick="slide()"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="67" viewBox="0 0 23 67"><path style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" fill-rule="evenodd" clip-rule="evenodd" fill="#fff" d="M22.604 33.453l-20.879-33.207-1.694 1.064 20.224 32.165-20.255 32.214 1.692 1.065 20.88-33.207-.059-.037z" ></path></svg></div>
 
                     
               </div>
 
-              <div id="overlay4" style="visibility:hidden" class="overlay">
+              <div id="page4" style="visibility:hidden" class="page" style="position:absolute">
               <div class="ui-nav ui-nav_prev" onclick="slideback()"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="67" viewBox="0 0 23 67"><path style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" fill-rule="evenodd" clip-rule="evenodd" fill="#fff" d="M2.349 33.475l20.223-32.165-1.693-1.064-20.879 33.207.091.057-.059.037 20.879 33.207 1.693-1.065z"></path></svg></div>
-                <h1> <br>
-                  <span>twitter</span>
-                  <br>
-                     
-                    </h1>
+
+              {% load ranges %}
+              {% for i in 5|get_range %}
+		        <div class='display_box' style="posotion:absolute">
+					<table><tr>
+		               <tr>
+		               <td>{{ i }}. <a href="#" style="font-weight:bold;color:black">Tweet Title</a></td>
+		                 	</tr>
+		                 	<tr>
+		                 		<td>----Tweet text----</td>
+		                 		
+		                 	</tr>
+		                 	<tr>
+		                 		<td>----Tweet image or video----</td>
+		                 		<td>[Other useful outputs]</td>
+		                 	</tr>
+		                 </td>
+		                 </tr>
+		             </table>
+				            </div>
+				{% endfor %}
+                
               </div>
 
               

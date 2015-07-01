@@ -1,4 +1,17 @@
+.chart{
+	text-align: left;
+	min-width: 70%;
+	float: center;
+	margin-left: 15%;
+}
 
+canvas{
+	float: center;
+}
+
+td.legendColorBox div div{
+	width:100%;
+}
 
 #container{
     visibility: hidden;
