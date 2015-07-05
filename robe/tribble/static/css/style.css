@@ -34,7 +34,7 @@ a.button {
 	width: 300px;
 	float: center;
 	height: 66px;
-	border: 2px solid #0DAF4A;
+	box-shadow: 10px 10px 10px 10px black;
 	background: #FDFDFD none repeat scroll 0% 0%;
 	font-size: 30px;
     vertical-align: middle;
@@ -354,17 +354,11 @@ nav{
     margin-top: 0px;
   }
 
-
-.ui-works {
-    top: 15px;
-    left: 15px;
-}
-
 .ui-works{
     position:fixed;
     z-index:125;
-    bottom:40px;
-    right:40px;
+    top:0px;
+    left:0px;
     padding:30px;
     width:29px;
     height:29px;
@@ -378,20 +372,20 @@ nav{
 
 
 .ui-works__square_1 {
-    left: 30px;
-    top: 30px;
+    left: 25px;
+    top: 25px;
 }
 .ui-works__square_2 {
-    left: 42px;
-    top: 30px;
+    left: 37px;
+    top: 25px;
 }
 .ui-works__square_3 {
-    left: 30px;
-    top: 42px;
+    left: 25px;
+    top: 37px;
 }
 .ui-works__square_4 {
-    left: 42px;
-    top: 42px;
+    left: 37px;
+    top: 37px;
 }
 .ui-works__square {
     position: absolute;
@@ -448,6 +442,7 @@ table{
 table.heading{
     min-width: 80%;
     margin-left: 10%;
+    color: black;
 }
 
 
@@ -456,10 +451,24 @@ table.heading{
 }
 
 th{
-    color: white;
-    min-width: 34%;
+    color: black;
+    min-width: 25%;
 }
 
 td{
-    min-width: 34%;
+    min-width: 25%;
+}
+
+nav{
+    max-height: 10%;
+}
+
+h1{
+    margin-top: -10px;
+    font-size: 30px;
+}
+
+th.trend_location.button{
+    background-color: #00A9FF;
+    min-height: 100%;
 }

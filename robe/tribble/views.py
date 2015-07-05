@@ -11,6 +11,11 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 from graphos.renderers import flot
 from graphos.sources.model import SimpleDataSource
+from .twitter import import_tweets, sentiment, wordlist
+from .models import Words_Global, Words_India
+import time
+from django.core.exceptions import ObjectDoesNotExist
+
 
 data =  [
         ['Year', 'facebook', 'twitter', 'youtube'],
@@ -25,7 +30,13 @@ def home(request):
 	return render(request,'index.html')
 
 def search(request):
-	return render(request,'search.html')
+   	
+   	try:
+	    words_g = Words_Global.objects.all().order_by('-id')[:50]
+	except ObjectDoesNotExist:
+   	    print("Entry doesn't exist.")
+
+	return render(request,'search.html',{'word':words_g})
 
 def getchart():
 	print '__init__'
@@ -35,6 +46,30 @@ def getchart():
 def stats(request):
 	return render(request,'stats.html',{'chart':getchart()})
 	
+def fetch(request):
+	import_tweets.import_tweets()
+	sentiment.getSenti()
+	try:
+	    words_g = Words_Global.objects.all().order_by('-id')[:50]
+	except ObjectDoesNotExist:
+   	    print("Entry doesn't exist.")
 
-def trend(request):
-	return render(request,'trending.html')
+	return render(request,'search.html',{'word':words_g})
+
+def noRedundant(request):
+	words_g = Words_Global.objects.all()
+	for i in words_g:
+		print i
+		word_name = i.word_name
+		word_from = i.word_from
+		sentiment = i.sentiment
+		date_time = i.date_time
+		Words_Global.objects.all().distinct(word_name).delete()
+		Words_Global.objects.create(word_name=word_name,word_from=word_from,sentiment=sentiment,date_time=date_time)
+	
+	try:
+	    words_g = Words_Global.objects.all().order_by('-id')[:50]
+	except ObjectDoesNotExist:
+   	    print("Entry doesn't exist.")
+
+	return render(request,'search.html',{'word':words_g})

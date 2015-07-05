@@ -10,46 +10,72 @@
     }
   </style>
 </head>
+<script type="text/javascript">
+
+function container() {
+  x = document.getElementById("container");
+  x.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+  y = document.getElementById("menu_select");
+  y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+</script>
 <body>
+      <div class="ui-menu" onclick="container()" id="menu_select" style="position:fixed">
+        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_1"></i>
+        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_2"></i>
+        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_3"></i>
+      </div>
                 <h1> <br>
-                  <nav class="">Search</nav>
+                  <nav class="navbar-search navbar-top" style='top: -14px;min-height: 86px;'> <form>SEARCH <input type="text" class='search_keyword'></form></nav>
                   <br>
                      
                     </h1>
-              <div class="action">
-              <div  id="search_button">
-                <p>	
-                	<form name="search_form">
-                    	<input type="text" class='search_keyword'>
-                    	<a href="{% url 'search'  %}" class="button" onclick="mv()">SEARCH</a>
-                	</form>
-                </p>
-              </div>
-            </div>
-
-
-
-            {% if 'key' %}
-	            <span class='search_results'>Found x results for 'key' ...</span>
-	            <hr>
+	            
               <table class='heading'>
                <tr>
                  <th class='trend_keyword trend'>Keyword(s)</th>
-                 <th class="trend_location trend">Location</th>
-                 <th class="trend_value trend">How Trending ?</th>
+                 <th class="trend_location trend">
+                    <select class="button">
+                      <option value='global' autoselect> Global </option>
+                      <option value='India'> India </option>
+                    </select></th>
+                 <th class="trend_value trend">Sentiment</th>
+                 <th class="trend_value trend">Date</th>
                </tr>
              </table>
-	            {% for i in 'output[key]' %}
+             <hr>
+	            {% for words in word %}
 		            <div class='display_box'>
 		            	<table>
-               <tr>
-                 <td class='trend_keyword trend'>{{ i }}</td>
-                 <td class="trend_location trend">India</td>
-                 <td class="trend_value trend">HOT</td>
-               </tr>
-             </table>
+                   <tr>
+                     <td class='trend_keyword trend'>{{ words.word_name }}</td>
+                     <td class="trend_location trend">{{ words.word_from }}</td>
+                     {% if words.sentiment == 2 %}
+                     <td class="trend_value trend">NEGATIVE</td>
+                     {% elif words.sentiment == 4 %}
+                     <td class="trend_value trend">POSITIVE</td>
+                     {% else %}
+                     <td class="trend_value trend">NEUTRAL</td>
+                     {% endif %}
+                     <td class="trend_location trend">{{ words.date_time }}</td>
+                   </tr>
+                 </table>
 		            </div>
 	            {% endfor %}
-            {% endif %}
+            <div id="container" class="container" >
+      
+              <nav>
+              <img href="#" class="close" src="{% static 'images/close_overlay.png'%}" style="position:relative" onclick="container()" >
+                <h4>NAVIGATE</h4>
+                        <ul>
+                  <li><a href="{% url 'fetch' %}" >+ Fetch Live Trends</a>
+                  </li>
+                  <li><a href="{% url 'noRedundant' %}" >+ Remove Redundancy</a>
+                    
+                  </li>
+                </ul>
+              </nav>  
+            </div>
 </body>
 {% endblock %}
