@@ -1,15 +1,14 @@
 import random, re
 import csv
 import nltk
-from nltk.corpus import movie_reviews
 from tribble.models import Words_Global, Words_India
 
-all_words = nltk.FreqDist(w.lower() for w in movie_reviews.words())
+with open('wordlist.txt','r') as f:
+    wordlist = f.read().split('\n')
+
+all_words = nltk.FreqDist(w.lower() for w in wordlist)
 random.shuffle(all_words)
 word_features = all_words.keys()[:2000]
-
-with open('wordlist.txt','r') as f:
-    wordlist = '|'.join(f.read().split('\n'))
 
 def makeDocument(tweets):
     documents = []
@@ -39,32 +38,32 @@ def splitHashTag(hashTag):
     return sent
 
 def getSenti():
-
     wg = Words_Global.objects.all()
     wi = Words_India.objects.all()
-    output = {'global':[],'india':[]}      
+    output = {'global':[],'india':[]}
 
-    with open('input/small_data.csv','r') as f:
+    with open('input/mtest.csv','r') as f:
         rdr = csv.reader(f)
         i = 0
         tweets = []
         for row in rdr:
-            words = row[5]
-            sentiment = row[0]
-            tweets += [(words, sentiment)]
+            if i>1:
+                words = row[5]
+                sentiment = row[0]
+                tweets += [(words, sentiment)]
+            i+=1
 
-    with open('input/large_data.csv','r') as f:
+    with open('input/mtrain.csv','r') as f:
         rdr = csv.reader(f)
         i = 0
         test_tweets = []
         for row in rdr:
-            words = row[5]
-            sentiment = row[0]
-            test_tweets += [(words, sentiment)]
+            if i>1:
+                words = row[5]
+                sentiment = row[0]
+                test_tweets += [(words, sentiment)]
             i+=1
-            if i>300:
-                break
-
+            
     documents = makeDocument(tweets)
     test_tweets = makeDocument(test_tweets)
     random.shuffle(documents)

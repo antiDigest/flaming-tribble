@@ -30,7 +30,6 @@ def home(request):
 	return render(request,'index.html')
 
 def search(request):
-   	
    	try:
 	    words_g = Words_Global.objects.all().order_by('-id')[:50]
 	except ObjectDoesNotExist:
@@ -58,18 +57,16 @@ def fetch(request):
 
 def noRedundant(request):
 	words_g = Words_Global.objects.all()
-	for i in words_g:
-		print i
-		word_name = i.word_name
-		word_from = i.word_from
-		sentiment = i.sentiment
-		date_time = i.date_time
-		Words_Global.objects.all().distinct(word_name).delete()
-		Words_Global.objects.create(word_name=word_name,word_from=word_from,sentiment=sentiment,date_time=date_time)
-	
-	try:
-	    words_g = Words_Global.objects.all().order_by('-id')[:50]
-	except ObjectDoesNotExist:
-   	    print("Entry doesn't exist.")
+	for word in words_g:
+		wn = word.word_name
+		wf = word.word_from
+		ws = word.sentiment
+		wd = word.date_time
+		deleter = Words_Global.objects.filter(word_name=wn)
+		for i in deleter:
+			#print i.word_name
+			i.delete()
+		Words_Global.objects.create(word_name=wn,word_from=wf,sentiment=ws,date_time=wd)
+	words_g = Words_Global.objects.all()
 
 	return render(request,'search.html',{'word':words_g})

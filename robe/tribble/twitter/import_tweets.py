@@ -27,7 +27,8 @@ def import_tweets():
 					i += 1
 					for name in out['trends']:
 						w = name['name'].encode('utf-8')
-						Words_India.objects.create(word_name=w,date_time=out['created_at'].split('T')[0],word_from=loc['country'])
+						if not w=='':
+							Words_India.objects.create(word_name=w,date_time=out['created_at'].split('T')[0],word_from=loc['country'])
 					if i>1:
 						break
 			if loc['country'] not in prev and loc['country']!='India':
@@ -36,7 +37,8 @@ def import_tweets():
 					i += 1
 					for name in out['trends']:
 						w = name['name'].encode('utf-8')
-						Words_Global.objects.create(word_name=w,date_time=out['created_at'].split('T')[0],word_from=loc['country'])
+						if not w=='':
+							Words_Global.objects.create(word_name=w,date_time=out['created_at'].split('T')[0],word_from=loc['country'])
 					if i>13:
 						break
 			if i>15:
