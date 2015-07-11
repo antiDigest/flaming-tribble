@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^search[?/]$', views.search , name='search' ),
     url(r'^statistics[?/]$', views.stats , name='stats' ),
     url(r'^whats_trending[?/]$', views.search , name='trend' ),
-    url(r'^live_trends[?/]$', views.fetch , name='fetch' ),
+    url(r'^live_trends/india[?/]$', views.fetch , name='india' ),
+    url(r'^live_trends/global[?/]$', views.fetch_global , name='global' ),
     url(r'^redundant_removal[?/]$', views.noRedundant , name='noRedundant' ),
 ]

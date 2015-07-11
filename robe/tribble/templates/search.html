@@ -12,6 +12,8 @@
 </head>
 <script type="text/javascript">
 
+setTimeout("location.reload(true);", 60000*15);
+
 function container() {
   x = document.getElementById("container");
   x.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
@@ -36,9 +38,9 @@ function container() {
                <tr>
                  <th class='trend_keyword trend'>Keyword(s)</th>
                  <th class="trend_location trend">
-                    <select class="button">
-                      <option value='global' autoselect> Global </option>
-                      <option value='India'> India </option>
+                    <select class="button" onChange="window.location.href=this.value">
+                      <option value="{% url 'global' %}" autoselect> Global </option>
+                      <option value="{% url 'india' %}"> India </option>
                     </select></th>
                  <th class="trend_value trend">Sentiment</th>
                  <th class="trend_value trend">Date</th>

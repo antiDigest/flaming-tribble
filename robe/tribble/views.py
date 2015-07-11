@@ -11,8 +11,8 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 from graphos.renderers import flot
 from graphos.sources.model import SimpleDataSource
-from .twitter import import_tweets, sentiment, wordlist
 from .models import Words_Global, Words_India
+from tribble.twitter import import_tweets
 import time
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -46,8 +46,14 @@ def stats(request):
 	return render(request,'stats.html',{'chart':getchart()})
 	
 def fetch(request):
-	import_tweets.import_tweets()
-	sentiment.getSenti()
+	import_tweets.import_tweets_india()
+	words_g = Words_India.objects.all().order_by('-id')[:50]
+	
+	return render(request,'search.html',{'word':words_g})
+
+def fetch_global(request):
+	import_tweets.import_tweets_global()
+	# sentiment.getSenti()
 	try:
 	    words_g = Words_Global.objects.all().order_by('-id')[:50]
 	except ObjectDoesNotExist:
@@ -67,6 +73,6 @@ def noRedundant(request):
 			#print i.word_name
 			i.delete()
 		Words_Global.objects.create(word_name=wn,word_from=wf,sentiment=ws,date_time=wd)
-	words_g = Words_Global.objects.all()
+	words_g = Words_Global.objects.all().order_by('-id')[:50]
 
 	return render(request,'search.html',{'word':words_g})

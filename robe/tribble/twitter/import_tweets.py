@@ -1,7 +1,13 @@
 import tweepy
 import time
-from tribble.models import Words_India, Words_Global
-import sys
+from tribble.sentiment.get_related import MakeSpider
+from twisted.internet import reactor
+from scrapy.crawler import CrawlerRunner
+from scrapy.utils.log import configure_logging
+from scrapy.settings import Settings
+from scrapy.utils.trackref import iter_all
+
+configure_logging()
 
 consumer_key = 'MbiHzivAIk3vLkWj19zVcw1WI'
 consumer_secret = 'ctZF0ZwAQrhWnn90qiMyBvdRPpO4YgCEX8n6QkGNqN4q1XDrok'
@@ -14,34 +20,54 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-def import_tweets():
+def import_tweets_india():
 	i=0
-	prev = ['']
+	prev = []
 	#for j in range(0,24):
 	#	time.sleep(60*60)
-	try:
-		location = api.trends_available()
-		for loc in location:
-			if loc['country'] == 'India':
-				for out in api.trends_place(loc['woeid']):
-					i += 1
-					for name in out['trends']:
-						w = name['name'].encode('utf-8')
-						if not w=='':
-							Words_India.objects.create(word_name=w,date_time=out['created_at'].split('T')[0],word_from=loc['country'])
-					if i>1:
-						break
-			if loc['country'] not in prev and loc['country']!='India':
-				prev += [loc['country']]
-				for out in api.trends_place(loc['woeid']):
-					i += 1
-					for name in out['trends']:
-						w = name['name'].encode('utf-8')
-						if not w=='':
-							Words_Global.objects.create(word_name=w,date_time=out['created_at'].split('T')[0],word_from=loc['country'])
-					if i>13:
-						break
-			if i>15:
-				break
-	except tweepy.TweepError:
-		pass
+	#f = open('output.txt','a')
+	dictionary = {}
+	location = api.trends_available()
+	for loc in location:
+		if loc['country'] == 'India':
+			prev += [loc['country']]
+			for out in api.trends_place(loc['woeid']):
+				i += 1
+				for json in out['trends']:
+					trend = json['name'].encode('utf-8')
+					print trend, json['url'] 
+					dictionary[trend] = [json['url'],loc['country']]
+					process = Crawler(MakeSpider,settings = Settings(values={}, priority='project'))
+					process.crawl(url=json['url'],country='India')
+					if reactor.running: 
+						reactor.stop()
+					reactor.run()# the script will block here until the crawling is finished
+					process.signals.connect(reactor.stop(), signal=signals.request_scheduled)
+					
+
+def import_tweets_global():
+	i=0
+	prev = []
+	#for j in range(0,24):
+	#	time.sleep(60*60)
+	#f = open('output.txt','a')
+	
+	dictionary = {}
+	location = api.trends_available()
+	for loc in location:
+		if loc['country'] != 'India' and loc['country'] not in prev:
+			prev += [loc['country']]
+			for out in api.trends_place(loc['woeid']):
+				i += 1
+				for json in out['trends']:
+					trend = json['name'].encode('utf-8')
+					print trend, json['url'] 
+					dictionary[trend] = [json['url'],loc['country']]
+					process = Crawler(MakeSpider,settings = Settings(values={}, priority='project'))
+					process.crawl(url=json['url'],country='India')				
+				
+					if reactor.running: 
+						reactor.stop()
+					sentiment = reactor.run()# the script will block here until the crawling is finished
+					process.signals.connect(reactor.stop(), signal=signals.request_scheduled)
+
