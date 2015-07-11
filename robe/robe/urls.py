@@ -21,10 +21,9 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.home, name='home' ),
     url(r'(?:.*?/)?(?P<path>(css|js|images)/.+)$', 'django.views.static.serve'),
-    url(r'^search[?/]$', views.search , name='search' ),
+    url(r'^search/(?P<value>(India|Global))[?/]$', views.search , name='search' ),
     url(r'^statistics[?/]$', views.stats , name='stats' ),
     url(r'^whats_trending[?/]$', views.search , name='trend' ),
-    url(r'^live_trends/india[?/]$', views.fetch , name='india' ),
-    url(r'^live_trends/global[?/]$', views.fetch_global , name='global' ),
+    url(r'^live_trends[?/]$', views.fetch , name='fetch' ),
     url(r'^redundant_removal[?/]$', views.noRedundant , name='noRedundant' ),
 ]

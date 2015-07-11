@@ -38,9 +38,10 @@ function container() {
                <tr>
                  <th class='trend_keyword trend'>Keyword(s)</th>
                  <th class="trend_location trend">
-                    <select class="button" onChange="window.location.href=this.value">
-                      <option value="{% url 'global' %}" autoselect> Global </option>
-                      <option value="{% url 'india' %}"> India </option>
+                    <select class="button" onChange="window.location.href=this.value" >
+                      <option value="" > From ? </option>
+                      <option value="/search/India/" > India </option>
+                      <option value="/search/Global/" > Global </option>                      
                     </select></th>
                  <th class="trend_value trend">Sentiment</th>
                  <th class="trend_value trend">Date</th>
@@ -53,9 +54,9 @@ function container() {
                    <tr>
                      <td class='trend_keyword trend'>{{ words.word_name }}</td>
                      <td class="trend_location trend">{{ words.word_from }}</td>
-                     {% if words.sentiment == 2 %}
+                     {% if words.sentiment == -1 %}
                      <td class="trend_value trend">NEGATIVE</td>
-                     {% elif words.sentiment == 4 %}
+                     {% elif words.sentiment == 1 %}
                      <td class="trend_value trend">POSITIVE</td>
                      {% else %}
                      <td class="trend_value trend">NEUTRAL</td>
@@ -71,7 +72,8 @@ function container() {
               <img href="#" class="close" src="{% static 'images/close_overlay.png'%}" style="position:relative" onclick="container()" >
                 <h4>NAVIGATE</h4>
                         <ul>
-                  <li><a href="{% url 'fetch' %}" >+ Fetch Live Trends</a>
+                        <li><a href="{% url 'fetch' %}" >+ FETCH LIVE TRENDS</a>
+                    
                   </li>
                   <li><a href="{% url 'noRedundant' %}" >+ Remove Redundancy</a>
                     
