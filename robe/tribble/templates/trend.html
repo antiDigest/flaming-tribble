@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<head>
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'css/search.css'%}" type="text/css" media="screen">
+  <style type="text/css">
+    body{
+      background-color:#EDECEC;
+    }
+  </style>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      function drawchart(){  
+        var options = {
+            title: 'Chart as is',
+            is3D: true,
+          };
+      }
+
+  </script>
+</head>
+<script type="text/javascript">
+
+// setTimeout("location.reload(true);", 60000*15);
+
+function container() {
+  x = document.getElementById("container");
+  x.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+  y = document.getElementById("menu_select");
+  y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+function showchart(value) {
+  alert(value);
+  // x = document.getElementById(value);
+  // x.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+  // y = document.getElementById("page-1");
+  // y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+</script>
+
+  <body>
+      <div class="ui-menu" onclick="container()" id="menu_select" style="position:fixed">
+        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_1"></i>
+        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_2"></i>
+        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_3"></i>
+      </div>
+                <h1 style="min-height:65px"> 
+                  <nav class="navbar-search navbar-top" style='top: -14px;min-height: 150px;'> 
+                  {% for field in form %}
+                  <form style="color:black" name="form" action="/search/{{ value }}/{{ field.text }}" method="get">
+                    {% csrf_token %}
+                  SEARCH 
+                  
+                    {{ field }} 
+                    </form>
+                  {% endfor %}
+
+                  </nav> 
+                                       
+                    </h1>
+
+                    {% block content1 %}
+                    {% endblock %}
+
+                    <div id="container" class="container" >
+      
+              <nav>
+              <img href="#" class="close" src="{% static 'images/close_overlay.png'%}" style="position:relative" onclick="container()" >
+                <h4>NAVIGATE</h4>
+                  <ul>
+                  <li><a href="{% url 'fetch' %}" >+ FETCH LIVE TRENDS</a>
+                    
+                  </li>
+                  <li><a href="{% url 'noRedundant' %}" >+ Remove Redundancy</a>
+                    
+                  </li>
+                </ul>
+              </nav>  
+            </div>
+</body>
+{% endblock %}

@@ -27,18 +27,12 @@ function over() {
   y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
 }
 
-function scroll(){
-  y = document.getElementById("page-1");
-  y.style.top = '5px';
-  y.style.left = '5px';
-}
-
 </script>
 
 
 <!--Home Start-->
 <section class="feature-section fluid top-section" id="page-1">
-        <div class="ui-works" href="#" onclick="over()" onscroll="scroll()">
+        <div class="ui-works" href="#" onclick="over()">
                 <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-works__square ui-works__square_1"></i>
                 <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-works__square ui-works__square_2"></i>
                 <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-works__square ui-works__square_3"></i>
@@ -68,11 +62,11 @@ function scroll(){
                             <div class="header">HOME</div>
                             <img src="{% static 'images/home.png'%}">
                         </a>
-                    <a href="{% url 'trend' %}" class="overlay_box overlay_box_3">
+                    <a href="{% url 'trend' 'India' %}" class="overlay_box overlay_box_3">
                             <div class="header">VIEW TRENDING</div>
                             <img src="{% static 'images/view.png'%}">
                         </a>
-                    <a href="/search/India/" class="overlay_box overlay_box_2">
+                    <a href="/explore/India/" class="overlay_box overlay_box_2">
                             <div class="header">SEARCH</div>
                             <img src="{% static 'images/search.png'%}">
                         </a>

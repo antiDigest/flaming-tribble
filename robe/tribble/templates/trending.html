@@ -1,0 +1,39 @@
+{% extends "trend.html" %}
+{% block content1 %}
+	            
+              <table class='heading' style="position:fixed;z-index:1000">
+               <tr>
+                 <th class='trend_keyword trend'>Keyword(s)</th>
+                 <th class="trend_location trend">
+                    <select class="button" onChange="window.location.href=this.value" >
+                      <option value="" > Country </option>
+                      <option value="/explore/India/" > India </option>
+                      <option value="/explore/Global/" > Global </option>                      
+                    </select></th>
+                 <!-- <th class="trend_value trend">Sentiment</th> -->
+                 <th class="trend_value trend">Date</th>
+               </tr>
+             </table>
+             <hr>
+             <br>
+             {% if query %}
+             <div class='display_box' style="text-align:center">Searched for '{{ query }}'</div>
+             {% endif %}
+	            {% for words in word %}
+		            <div class='display_box'>
+		            	<table>
+                   <tr>
+                     <td class='trend_keyword trend'><a href="/search/{{ value }}/{{ words.word_name }}" style="font-size:15px;margin-left:10px" method='POST'>{{ words.word_name }}</a></td>
+                     <td class="trend_location trend">{{ words.word_from }}</td>                     
+
+                     <td class="trend_location trend">{{ words.date_time }} </td>
+
+                   </tr>
+
+                 </table>
+                 
+		            </div>
+	            {% endfor %}
+   {% endblock %}         
+
+                

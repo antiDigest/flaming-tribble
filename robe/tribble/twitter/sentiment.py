@@ -12,6 +12,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 punct = string.punctuation
+parenthesis = [')','(', ']','[','{','}','*','&','\\','!','$','^',';','<','>','?','_','=','+','RT']
 
 def getTaggedWords():
     #Load positive tweets into a list
@@ -72,10 +73,36 @@ def getWords(taggedtext): # seems correct
     wordlist = [i for i in wordlist if not i in stopwords.words('english')]
     wordlist = [i for i in wordlist if not i in customstopwords]
 
-    return wordlist   
+    return wordlist
 
-taggedtext = getTaggedWords()
-word_features = getWords(taggedtext)
+def textCleaner(value):
+    # print value
+    
+    for i in parenthesis:
+        value = value.replace(i, '')
+    # print value
+    for word in value.split(' '):
+        if '#' in word:
+            if word[0] == '#':
+                value = re.sub(word,"",value)
+        if '@' in word:
+            value = re.sub(word,"",value)
+            # print word
+        if 'http://' in word or 'http' in word or '.com' in word:
+            value = re.sub(word,"",value)
+            # print word
+    for i in string.punctuation:
+        value = value.replace(i, '')
+    return value
+
+def textClean(s):
+    remove = ['\t','\n','  ']
+    # s = s.replace(i, Noneunct)
+    for i in remove:
+        s = re.sub(i,'',s)
+    s = s.lower()
+    s = s.split()
+    return s
 
 def makeDocument(tweets): # seems correct
     documents = []
@@ -84,8 +111,9 @@ def makeDocument(tweets): # seems correct
         documents.append((words_filtered, sentiment))
     return documents 
 
-def documentFeatures(document): # seems correct
-    document_words = set(document)
+def documentFeatures(taggedtext): # seems correct
+    # print taggedtext
+    document_words = set(taggedtext)
     features = {}
     for word in word_features:
         features['contains(%s)' % word] = (word in document_words)
@@ -103,30 +131,42 @@ def getMax(a,b,c):
         else:
             return c, 1
 
-def getSenti(stmt):
-    # print stopwords.words('english'
-    # test_tweets = makeDocumenst(test_tweets)
+taggedtext = getTaggedWords()
+word_features = getWords(taggedtext)
+
+def trainClassifier():
+    
     random.shuffle(taggedtext)
 
+    # print taggedtext
     featureset = nltk.classify.apply_features(documentFeatures, taggedtext)
-    training_set = featureset[300:]
-    test_set = featureset[:300]
+    # print len(featureset)
+    training_set = featureset[100:]
+    test_set = featureset[:100]
     classifier = nltk.NaiveBayesClassifier.train(training_set)
     print 'Accuracy :', nltk.classify.accuracy(classifier, test_set)
+    classifier.show_most_informative_features(30)
+    return classifier
 
+def getSenti(stmt, classifier):
+    print 'Getting Sentiment ... '
+    # print stmt
     count_neg =0
     count_pos =0
     count_neutral = 0
     for s in stmt:
-        s = s.lower()
-        s = s.split()
-        out = classifier.classify(documentFeatures(s))
-        if out < -0.4:
-            count_neg += 1
-        elif out > 0.4:
-            count_pos += 1
-        else:
-            count_neutral += 1
-        # print out
+        # print s
+        s = textClean(s)
+        if s!=' ':
+            out = classifier.classify(documentFeatures(s))
+            if out < -0.4:
+                count_neg += 1
+            elif out > 0.4:
+                count_pos += 1
+            else:
+                count_neutral += 1
+            # print s, out
 
-    return getMax(count_neutral, count_neg, count_pos)
+    return count_neutral, count_neg, count_pos, len(stmt)
+
+# word disambigustiojn

@@ -4,7 +4,10 @@
   {% load staticfiles %}
   <link rel="stylesheet" href="{% static 'css/search.css'%}" type="text/css" media="screen">
   <link rel="stylesheet" href="{% static 'css/stats.css'%}" type="text/css" media="screen">
-  
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+  </script>
 
 
 </head>
@@ -18,34 +21,17 @@ function container() {
 }
 
 </script>
-		
-		<div class="ui-menu" onclick="container()" id="menu_select" style="position:fixed">
-				<i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_1"></i>
-				<i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_2"></i>
-				<i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_3"></i>
-			</div>
-
-		<div id="container" class="container" >
-			
-			<nav>
-			<img href="#" class="close" src="{% static 'images/close_overlay.png'%}" style="position:relative" onclick="container()" >
-				<h4>NAVIGATE</h4>
-                <ul>
-					<li><a href="{% url 'stats' %}">+ Statistics Home</a></li>
-					<li><a href="#" onclick="ga('send', 'event', 'Menutech', 'Click', 'Menutech-button');">+ FaceBook Statistics</a>
-						
-					</li>
-					<li><a href="#" onclick="ga('send', 'event', 'Menutech', 'Click', 'Menutech-button');">+ YouTube Statistics</a>
-						
-					</li> 
-					<li><a href="#" onclick="ga('send', 'event', 'Menutech', 'Click', 'Menutech-button');">+ Twitter Statistics</a>
-						
-					</li>
-				</ul>
-			</nav>  
-		</div>
             
-          		{% block content1 %}{% endblock %}
+          	<h1 style="min-height:65px"> 
+                  <nav class="navbar-search navbar-top" style='top: -14px;min-height: 13%;'> 
+                  <form style="color:black">STATISTICS
+                  </form></nav>                     
+                    </h1>
+
+			<div id="page1" class="page">
+				<div class='chart'>{{ chart.as_html }}</div>
+        <div class='chart'>{{ charti.as_html }}</div>
+              </div>
 
               
 {% endblock %}

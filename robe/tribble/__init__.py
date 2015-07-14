@@ -1,3 +1,3 @@
 import templatetags
 import twitter
-import sentiment
+import test

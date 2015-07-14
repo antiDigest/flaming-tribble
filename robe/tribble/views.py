@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from django.http import Http404
-
-# Create your views here.
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
@@ -15,109 +13,154 @@ from .models import Words_Global, Words_India
 from tribble.twitter import import_tweets
 import time
 import thread
+from tribble.forms import SearchForm
 from django.core.exceptions import ObjectDoesNotExist
-from tribble.sentiment.get_related import MakeSpider
-from twisted.internet import reactor
-from scrapy.crawler import CrawlerRunner, Crawler
-from scrapy.utils.log import configure_logging
-from scrapy.settings import Settings
-from scrapy.utils.trackref import iter_all
-from .forms import SelectForm
+from graphos.renderers import gchart
+from tribble.twitter.sentiment import *
+import tweepy
 
-configure_logging()
+classifier = trainClassifier()
 
 data =  [
-        ['Year', 'facebook', 'twitter', 'youtube'],
-        [2004, 1000, 400, 893],
-        [2005, 1170, 460, 837],
-        [2006, 660, 1120, 327],
-        [2007, 1030, 540, 1900]
+        ['Name', 'Percent'],
+        ['facebook', 33],
+        ['youtube', 43],
+        ['twitter', 54],
     ]
-	
+
+data2 =  [
+        ['Year', 'facebook', 'Twitter', 'Youtube'],
+        [2004, 33, 897, 98],
+        [2005, 3332, 89, 982],
+        [2006, 332, 711, 928],
+    ]
+
+consumer_key = 'MbiHzivAIk3vLkWj19zVcw1WI'
+consumer_secret = 'ctZF0ZwAQrhWnn90qiMyBvdRPpO4YgCEX8n6QkGNqN4q1XDrok'
+
+access_token = '3253361905-3uXheHOx2Si4DE0Rio46NM9iNKjcwXPLpRZTeIV'
+access_token_secret = 'RIoJvqwIimHuVlL7IBmfuloPSBPla2khnpXHV4rZE0j03'
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+api = tweepy.API(auth)
 
 def home(request):
-	return render(request,'index.html')
+    return render(request,'index.html')
 
-def search(request, value):
-	
-	word = Words_India.objects.all().order_by('-id')[:50]
+def trend(request, value):
+    if request.method=="POST":
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['name']
+            qtext = query.split()
+            
+            word = []
+            for i in qtext:
+                words = Words_India.objects.filter(word_name__contains=i)
+                word += [k for k in words]
+            
+            words_g = []
+            for i in qtext:
+                words = Words_Global.objects.filter(word_name__contains=i)
+                words_g += [k for k in words]
+            
+        if value !='India':
+            word = words_g
+        return render(request,'trending.html',{'word':word,'form':form,'value':value,'query':query} )
+    else:
+        form = SearchForm()
+        word = Words_India.objects.all()[:50]
 
-	words_g = Words_Global.objects.all().order_by('-id')[:50]
+        words_g = Words_Global.objects.all()[:50]
 
-	if value !='India':
-		word = words_g
-	else:
-		print 'Form return invalid'
+        if value !='India':
+            word = words_g
 
-	return render(request,'search.html',{'word':word} )
+        return render(request,'trending.html',{'word':word,'form':form,'value':value} )
 
 def getchart():
-	print '__init__'
-	chart = flot.LineChart(SimpleDataSource(data=data))
-	return chart
+    chart = gchart.PieChart(SimpleDataSource(data=data))
+    return chart
 
 def stats(request):
-	return render(request,'stats.html',{'chart':getchart()})
-	
+    chart2 = gchart.LineChart(SimpleDataSource(data=data2))
+    return render(request,'statistics.html',{'chart':getchart(), 'charti':chart2})
+    
 def fetch(request):
-	import_tweets.import_tweets_india()
-	words_i = Words_India.objects.all().order_by('-id')[:50]
-	
-	urls = []
-	k = Words_India.objects.all()
-	for i in k:
-		urls += i.url
+    import_tweets.import_tweets_india()
+    words_i = Words_India.objects.all().order_by('-id')[:50]
 
-	# thread.start_new_thread(crawlThread, (urls,'India', ) )
+    import_tweets.import_tweets_global()
 
-	import_tweets.import_tweets_global()
-	# sentiment.getSenti()
-	try:
-	    words_g = Words_Global.objects.all().order_by('-id')[:50]
-	except ObjectDoesNotExist:
-   	    print("Entry doesn't exist.")
-
-   	urls = []
-	k = Words_Global.objects.all()
-	for i in k:
-		urls += i.url
-
-	# thread.start_new_thread(crawlThread, (urls,'global', ) )
-
-	return render(request,'search.html',{'wordg':words_g,'wordi':words_i})
-
-def crawlThread(url, country):
-	process = Crawler(MakeSpider,settings = Settings(values={}, priority='project'))
-	process.crawl(url=url,country=country)
-	reactor.run()# the script will block here until the crawling is finished
-	process.signals.connect(reactor.stop(), signal=signals.request_scheduled)
+    return render(request,'trending.html',{'word':words_i,'form':SearchForm()})
 
 def noRedundant(request):
-	words_g = Words_Global.objects.all()
-	for word in words_g:
-		wn = word.word_name
-		wf = word.word_from
-		ws = word.sentiment
-		wd = word.date_time
-		wu = word.url
-		deleter = Words_Global.objects.filter(word_name=wn)
-		for i in deleter:
-			#print i.word_name
-			i.delete()
-		Words_Global.objects.create(word_name=wn,word_from=wf,sentiment=ws,date_time=wd, url=wu)
+    print 'Removing global ...'
+    wi = Words_Global.objects.all()
+    
+    for i in wi:
+        if Words_India.objects.filter(word_name=i.word_name,onlydate=i.onlydate,senti_flag=i.senti_flag).count() > 1:
+            i.delete()
 
-	words_g = Words_India.objects.all()
-	for word in words_g:
-		wn = word.word_name
-		wf = word.word_from
-		ws = word.sentiment
-		wd = word.date_time
-		wu = word.url
-		deleter = Words_India.objects.filter(word_name=wn)
-		for i in deleter:
-			#print i.word_name
-			i.delete()
-		Words_India.objects.create(word_name=wn,word_from=wf,sentiment=ws,date_time=wd, url=wu)
-	words_i = Words_India.objects.all().order_by('-id')[:50]
+    print 'Removing Indian ...'
+    wi = Words_India.objects.all()
+    
+    for i in wi:
+        if Words_India.objects.filter(word_name=i.word_name,onlydate=i.onlydate,senti_flag=i.senti_flag).count() > 1:
+            i.delete()
+            
+    words_i = Words_India.objects.all()[:50]
 
-	return render(request,'search.html',{'word':words_i})
+    form = SearchForm()
+
+    return render(request,'trending.html',{'word':words_i,'form':form, 'value':'India'})
+
+def search(request, value):
+    if request.method=='POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            return render(request,'search.html',{'query':query,'form':form, 'value':'India'})
+    else:
+        query = request.GET.get('query')
+        searches = api.search(query,lang="en",since='2015-04-01',untill=time.strftime('%Y-%m-%d'),count=100)
+        statement = []
+        linesearch = api.search(query,lang="en",since='2015-04-01',untill=time.strftime('%Y-%m-%d')\
+            ,count=100, result_type='popular')
+        for search in searches:
+            k = search._json['user']
+            statement += [textCleaner(search.text)]
+        senti_neut, senti_neg, senti_pos, tot = getSenti(statement, classifier)
+
+        # Words_India.objects.filter(word_name=word).aggregate(Max())
+
+        data = [['Sentiment','Percentage'],['Negative',senti_neg],['Positive',senti_pos],['Neutral',senti_neut],]
+        piechart = gchart.PieChart(SimpleDataSource(data=data))
+
+        data=[['Time','Favourties'],]
+        for search in linesearch:
+            data += [[str(search.created_at),search.favorite_count]]
+
+        print data
+        linechart = gchart.LineChart(SimpleDataSource(data=data))
+        return render(request,'search.html',{'query':query,'form':SearchForm(), \
+        'value':'India', 'piechart':piechart, 'linechart':linechart})
+
+def show(request,value,word):
+    searches = api.search(word,lang="en",since='2015-04-01',untill=time.strftime('%Y-%m-%d'),count=100)
+    statement = []
+    for search in searches:
+        k = search._json['user']
+        statement += [textCleaner(search.text)]
+    senti_neut, senti_neg, senti_pos, tot = getSenti(statement, classifier)
+
+    # Words_India.objects.filter(word_name=word).aggregate(Max())
+
+    data = [['Sentiment','Percentage'],['Negative',senti_neg],['Positive',senti_pos],['Neutral',senti_neut],]
+    piechart = gchart.PieChart(SimpleDataSource(data=data))
+    linechart = None
+    return render(request,'search.html',{'query':word,'form':SearchForm(), \
+        'value':'India', 'piechart':piechart, 'linechart':linechart})
+    

@@ -1,85 +1,15 @@
-{% extends "layout.html" %}
-{% block content %}
+{% extends 'trend.html' %}
+{% block content1 %}
+    <div style='position:fixed;z-index:1000;text-align:center;font-size:30px;min-width:100%'>{{ query }}</div>
 
-<head>
-  {% load staticfiles %}
-  <link rel="stylesheet" href="{% static 'css/search.css'%}" type="text/css" media="screen">
-  <style type="text/css">
-    body{
-      background-image: url("{% static 'images/search_qm.jpeg' %}")
-    }
-  </style>
-</head>
-<script type="text/javascript">
+    <br><br><br>
+    <div class="display_box" style="margin-top:10px">
+    Trend
+      {{ linechart.as_html }}
+    </div>
 
-setTimeout("location.reload(true);", 60000*15);
-
-function container() {
-  x = document.getElementById("container");
-  x.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
-  y = document.getElementById("menu_select");
-  y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
-}
-
-</script>
-<body>
-      <div class="ui-menu" onclick="container()" id="menu_select" style="position:fixed">
-        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_1"></i>
-        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_2"></i>
-        <i style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255); border-color: rgb(255, 255, 255); background-color: rgb(255, 255, 255);" class="ui-menu__line ui-menu__line_3"></i>
-      </div>
-                <h1> <br>
-                  <nav class="navbar-search navbar-top" style='top: -14px;min-height: 86px;'> <form>SEARCH <input type="text" class='search_keyword'></form></nav>
-                  <br>
-                     
-                    </h1>
-	            
-              <table class='heading'>
-               <tr>
-                 <th class='trend_keyword trend'>Keyword(s)</th>
-                 <th class="trend_location trend">
-                    <select class="button" onChange="window.location.href=this.value" >
-                      <option value="" > From ? </option>
-                      <option value="/search/India/" > India </option>
-                      <option value="/search/Global/" > Global </option>                      
-                    </select></th>
-                 <th class="trend_value trend">Sentiment</th>
-                 <th class="trend_value trend">Date</th>
-               </tr>
-             </table>
-             <hr>
-	            {% for words in word %}
-		            <div class='display_box'>
-		            	<table>
-                   <tr>
-                     <td class='trend_keyword trend'>{{ words.word_name }}</td>
-                     <td class="trend_location trend">{{ words.word_from }}</td>
-                     {% if words.sentiment == -1 %}
-                     <td class="trend_value trend">NEGATIVE</td>
-                     {% elif words.sentiment == 1 %}
-                     <td class="trend_value trend">POSITIVE</td>
-                     {% else %}
-                     <td class="trend_value trend">NEUTRAL</td>
-                     {% endif %}
-                     <td class="trend_location trend">{{ words.date_time }}</td>
-                   </tr>
-                 </table>
-		            </div>
-	            {% endfor %}
-            <div id="container" class="container" >
-      
-              <nav>
-              <img href="#" class="close" src="{% static 'images/close_overlay.png'%}" style="position:relative" onclick="container()" >
-                <h4>NAVIGATE</h4>
-                        <ul>
-                        <li><a href="{% url 'fetch' %}" >+ FETCH LIVE TRENDS</a>
-                    
-                  </li>
-                  <li><a href="{% url 'noRedundant' %}" >+ Remove Redundancy</a>
-                    
-                  </li>
-                </ul>
-              </nav>  
-            </div>
-</body>
+    <div class="display_box" style="margin-top:10px">
+    Sentiment
+      {{ piechart.as_html }}
+    </div>
 {% endblock %}

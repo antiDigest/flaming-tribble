@@ -30,14 +30,15 @@ a.button {
 
 }
 
-#search_area input{
-	width: 300px;
+input{
+	width: 60%;
 	float: center;
-	height: 66px;
-	box-shadow: 10px 10px 10px 10px black;
-	background: #FDFDFD none repeat scroll 0% 0%;
+	height: 45px;
+	box-shadow: 2px 5px 5px black;
+    border: 2px solid white;
 	font-size: 30px;
     vertical-align: middle;
+    color: #000;
 }
 
 #search_area .button{
