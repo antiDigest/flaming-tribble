@@ -1,15 +1,39 @@
 {% extends 'trend.html' %}
 {% block content1 %}
+<head>
+  <title>Search results for {{ query }} | Flaming Tribble</title>
+</head>
     <div style='position:fixed;z-index:1000;text-align:center;font-size:30px;min-width:100%'>{{ query }}</div>
 
     <br><br><br>
     <div class="display_box" style="margin-top:10px">
     Trend
       {{ linechart.as_html }}
+      {{ word }} was most trending on {{ trend }}
     </div>
 
     <div class="display_box" style="margin-top:10px">
     Sentiment
       {{ piechart.as_html }}
     </div>
+
+    <div class="display_box" style="margin-top:10px">
+    Other searches might include :
+      {% for words in related %}
+                <div class='display_box'>
+                  <table>
+                   <tr>
+                     <td class='trend_keyword trend'><a href="/search/{{ value }}/{{ words.word_name }}" style="font-size:15px;margin-left:10px" method='POST'>{{ words.word_name }}</a></td>
+                     <td class="trend_location trend">{{ words.word_from }}</td>                     
+
+                     <td class="trend_location trend">{{ words.date_time }} </td>
+
+                   </tr>
+
+                 </table>
+                 
+                </div>
+              {% endfor %}
+    </div>
+
 {% endblock %}

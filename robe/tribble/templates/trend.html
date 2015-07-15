@@ -2,6 +2,7 @@
 {% block content %}
 
 <head>
+  <title>View Trending | Flaming Tribble</title>
   {% load staticfiles %}
   <link rel="stylesheet" href="{% static 'css/search.css'%}" type="text/css" media="screen">
   <style type="text/css">
@@ -51,7 +52,7 @@ function showchart(value) {
                 <h1 style="min-height:65px"> 
                   <nav class="navbar-search navbar-top" style='top: -14px;min-height: 150px;'> 
                   {% for field in form %}
-                  <form style="color:black" name="form" action="/search/{{ value }}/{{ field.text }}" method="get">
+                  <form style="color:black" name="form" action="/search/{{ field.text }}" method="get">
                     {% csrf_token %}
                   SEARCH 
                   

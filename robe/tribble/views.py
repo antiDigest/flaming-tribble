@@ -30,7 +30,7 @@ data =  [
 
 data2 =  [
         ['Year', 'facebook', 'Twitter', 'Youtube'],
-        [2004, 33, 897, 98],
+        [2004, 32, 897, 98],
         [2005, 3332, 89, 982],
         [2006, 332, 711, 928],
     ]
@@ -45,6 +45,9 @@ auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
+
+with open('countries.txt','r') as f:
+    english = f.read().split('\n')
 
 def home(request):
     return render(request,'index.html')
@@ -71,9 +74,9 @@ def trend(request, value):
         return render(request,'trending.html',{'word':word,'form':form,'value':value,'query':query} )
     else:
         form = SearchForm()
-        word = Words_India.objects.all()[:50]
+        word = Words_India.objects.all().order_by('-id')[:50]
 
-        words_g = Words_Global.objects.all()[:50]
+        words_g = Words_Global.objects.all().order_by('-id')[:50]
 
         if value !='India':
             word = words_g
@@ -94,7 +97,7 @@ def fetch(request):
 
     import_tweets.import_tweets_global()
 
-    return render(request,'trending.html',{'word':words_i,'form':SearchForm()})
+    return render(request,'trending.html',{'word':words_i,'form':SearchForm(), 'value':'India'})
 
 def noRedundant(request):
     print 'Removing global ...'
@@ -111,7 +114,7 @@ def noRedundant(request):
         if Words_India.objects.filter(word_name=i.word_name,onlydate=i.onlydate,senti_flag=i.senti_flag).count() > 1:
             i.delete()
             
-    words_i = Words_India.objects.all()[:50]
+    words_i = Words_India.objects.all().order_by('-id')[:50]
 
     form = SearchForm()
 
@@ -122,45 +125,76 @@ def search(request, value):
         form = SearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
-            return render(request,'search.html',{'query':query,'form':form, 'value':'India'})
+            return render(request,'search.html',{'query':query,'form':form, 'value':value})
     else:
-        query = request.GET.get('query')
-        searches = api.search(query,lang="en",since='2015-04-01',untill=time.strftime('%Y-%m-%d'),count=100)
+        try:
+            query = request.GET.get('query')
+            searches = api.search(query,lang="en",since='2015-01-01',until=time.strftime('%Y-%m-%d'),count=100)
+            statement = []
+            linesearch = api.search(query,lang="en",since='2015-01-01',until=time.strftime('%Y-%m-%d')\
+                ,count=100, result_type='popular')
+            for search in searches:
+                k = search._json['user']
+                statement += [textCleaner(search.text)]
+            senti_neut, senti_neg, senti_pos, tot = getSenti(statement, classifier)
+
+            # wi = Words_India.objects.filter(word_name=word)
+            # if wi.count() = 0:
+            #     Words_India.objects
+
+            data = [['Sentiment','Percentage'],['Negative',senti_neg],['Positive',senti_pos],['Neutral',senti_neut],]
+            piechart = gchart.PieChart(SimpleDataSource(data=data))
+
+            data=[['Time','Favourties'],]
+            for search in linesearch:
+                data += [[str(search.created_at),search.favorite_count]]
+
+            print data
+            linechart = gchart.LineChart(SimpleDataSource(data=data))
+
+            return render(request,'search.html',{'query':query,'form':SearchForm(), \
+                'value':value, 'piechart':piechart, 'linechart':linechart})
+        except tweepy.TweepError:
+            return HttpResponse('No connection to the internet was found')
+
+        
+
+def show(request,value,word):
+    try:
+        searches = api.search(word,lang="en",since='2015-01-01',until=time.strftime('%Y-%m-%d'),count=100)
+        linesearch = api.search(word,lang="en",since='2015-01-01',until=time.strftime('%Y-%m-%d')\
+                ,count=100, result_type='popular')
         statement = []
-        linesearch = api.search(query,lang="en",since='2015-04-01',untill=time.strftime('%Y-%m-%d')\
-            ,count=100, result_type='popular')
         for search in searches:
             k = search._json['user']
             statement += [textCleaner(search.text)]
         senti_neut, senti_neg, senti_pos, tot = getSenti(statement, classifier)
 
-        # Words_India.objects.filter(word_name=word).aggregate(Max())
-
         data = [['Sentiment','Percentage'],['Negative',senti_neg],['Positive',senti_pos],['Neutral',senti_neut],]
         piechart = gchart.PieChart(SimpleDataSource(data=data))
-
+        
         data=[['Time','Favourties'],]
+        m = 0
         for search in linesearch:
+            if search.favorite_count > m:
+                m = search.favorite_count
+                trend = search.created_at
             data += [[str(search.created_at),search.favorite_count]]
 
-        print data
         linechart = gchart.LineChart(SimpleDataSource(data=data))
-        return render(request,'search.html',{'query':query,'form':SearchForm(), \
-        'value':'India', 'piechart':piechart, 'linechart':linechart})
 
-def show(request,value,word):
-    searches = api.search(word,lang="en",since='2015-04-01',untill=time.strftime('%Y-%m-%d'),count=100)
-    statement = []
-    for search in searches:
-        k = search._json['user']
-        statement += [textCleaner(search.text)]
-    senti_neut, senti_neg, senti_pos, tot = getSenti(statement, classifier)
+        wi = Words_India.objects.filter(word_name=word)
+        if wi:
+            related = wi
+        else:
+            related = Words_Global.objects.filter(word_name=word)
 
-    # Words_India.objects.filter(word_name=word).aggregate(Max())
+        return render(request,'search.html',{'query':word,'form':SearchForm(), 'trend':trend, \
+            'value':value, 'piechart':piechart, 'linechart':linechart, 'related':related})
+        
+    except tweepy.TweepError:
+        return HttpResponse('Unable to connect to the internet')
 
-    data = [['Sentiment','Percentage'],['Negative',senti_neg],['Positive',senti_pos],['Neutral',senti_neut],]
-    piechart = gchart.PieChart(SimpleDataSource(data=data))
-    linechart = None
-    return render(request,'search.html',{'query':word,'form':SearchForm(), \
-        'value':'India', 'piechart':piechart, 'linechart':linechart})
+
+    
     
