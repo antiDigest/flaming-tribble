@@ -8,13 +8,17 @@ import math
 import sys
 import os
 import codecs
+from robe.settings import BASE_DIR
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-with open('positive.txt','r') as f:
+pos = os.path.join(BASE_DIR,'positive.txt')
+neg = os.path.join(BASE_DIR,'negative.txt')
+
+with open(pos,'r') as f:
     positive = f.read().split('\n')
 
-with open('negative.txt','r') as f:
+with open(neg,'r') as f:
     negative = f.read().split('\n')
 
 parenthesis = [')','(', ']','[','{','}','*','&','\\','!','$','^',';','<','>','?','_','=','+','RT','.']
