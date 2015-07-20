@@ -23,8 +23,9 @@ urlpatterns = [
     url(r'(?:.*?/)?(?P<path>(css|js|images)/.+)$', 'django.views.static.serve'),
     url(r'^explore/(?P<value>(India|Global))[?/]$', views.trend , name='trend' ),
     url(r'^search/$', views.search , name='search' ),
-    url(r'^search/(?P<value>(India|Global))/(?P<word>[\w\+%_& #]+)$', views.show , name='show' ),
+    url(r'^search/(?P<value>(India|Global))/(?P<word>.*)$', views.show , name='show' ),
     url(r'^statistics[?/]$', views.stats , name='stats' ),
     url(r'^live_trends[?/]$', views.fetch , name='fetch' ),
+    url(r'^privacy[?/]$', views.privacy , name='privacy' ),
     url(r'^redundant_removal[?/]$', views.noRedundant , name='noRedundant' ),
 ]

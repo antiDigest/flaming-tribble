@@ -8,16 +8,27 @@
     <br><br><br>
     <div class="display_box" style="margin-top:10px">
     Trend
+    {% if linechart %}
       {{ linechart.as_html }}
-      {{ word }} was most trending on {{ trend }}
+    
+      '{{ query }}' was most trending on '{{ trend }}'
+    {% else %}
+      No trend found for this
+    {% endif %}
     </div>
 
     <div class="display_box" style="margin-top:10px">
     Sentiment
+    {% if piechart %}
       {{ piechart.as_html }}
+    {% else %}
+      No trend found for this
+    {% endif %}
     </div>
 
+    {% if related %}
     <div class="display_box" style="margin-top:10px">
+    
     Other searches might include :
       {% for words in related %}
                 <div class='display_box'>
@@ -34,6 +45,8 @@
                  
                 </div>
               {% endfor %}
+
     </div>
+    {% endif %}
 
 {% endblock %}

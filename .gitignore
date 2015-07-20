@@ -1,2 +1,6 @@
 *.pyc
 /**/input
+*.txt
+*.cfg
+local_settings.py
+test

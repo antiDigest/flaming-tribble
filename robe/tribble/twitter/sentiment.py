@@ -2,7 +2,7 @@ import random, re
 import string
 import csv
 import nltk
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from stemming.porter2 import stem
 import math
 import sys
@@ -11,53 +11,33 @@ import codecs
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-punct = string.punctuation
-parenthesis = [')','(', ']','[','{','}','*','&','\\','!','$','^',';','<','>','?','_','=','+','RT']
+with open('positive.txt','r') as f:
+    positive = f.read().split('\n')
 
+with open('negative.txt','r') as f:
+    negative = f.read().split('\n')
+
+parenthesis = [')','(', ']','[','{','}','*','&','\\','!','$','^',';','<','>','?','_','=','+','RT','.']
+# print stopwords.words('english')
 def getTaggedWords():
-    #Load positive tweets into a list
-    p = open('positive.txt', 'r')
-    postxt = p.read().split('\n')
-
-    #Load negative tweets into a list
-    n = open('negative.txt', 'r')
-    negtxt = n.read().split('\n')
-
+    
     neglist = []
     poslist = []
 
-    #Create a list of 'negatives' with the exact length of our negative tweet list.
-    for i in range(0,len(negtxt)):
+    for i in range(0,len(negative)):
         neglist.append(-1)
 
-    #Likewise for positive.
-    for i in range(0,len(postxt)):
+    for i in range(0,len(positive)):
         poslist.append(1)
 
-    #Creates a list of tuples, with sentiment tagged.
-    postagged = zip(postxt, poslist)
-    negtagged = zip(negtxt, neglist)
+    postagged = zip(positive, poslist)
+    negtagged = zip(negative, neglist)
 
-    # print postagged
-    #Combines all of the tagged tweets to one large list.
     taggedtext = postagged + negtagged
 
-    # print len(taggedtext)
     return taggedtext
 
-def getAllWords(tweets):
-    allwords = []
-    for (words, sentiment) in tweets:
-        allwords.extend(words)
-    return allwords
-
-#Order a list of tweets by their frequency.
-def getWordFeatures(listoftweets):
-    #Print out wordfreq if you want to have a look at the individual counts of words.
-    wordfreq = nltk.FreqDist(listoftweets)
-    words = wordfreq.keys()
-    return words
-
+customstopwords = ['band', 'they', 'them','and','the']
 
 def getWords(taggedtext): # seems correct
     # print wordlist
@@ -95,60 +75,76 @@ def textCleaner(value):
         value = value.replace(i, '')
     return value
 
-def textClean(s):
-    remove = ['\t','\n','  ']
-    # s = s.replace(i, Noneunct)
-    for i in remove:
-        s = re.sub(i,'',s)
-    s = s.lower()
-    s = s.split()
-    return s
+
+def getAllWords(tweets):
+    allwords = []
+    for (words, sentiment) in tweets:
+        allwords.extend(words)
+    return allwords
+
+#Order a list of tweets by their frequency.
+def getWordFeatures(listoftweets):
+    #Print out wordfreq if you want to have a look at the individual counts of words.
+    wordfreq = nltk.FreqDist(listoftweets)
+    words = wordfreq.keys()
+    return words
+
+taggedtext = getTaggedWords()
+word_features = getWords(taggedtext)
 
 def makeDocument(tweets): # seems correct
     documents = []
     for (words, sentiment) in tweets:
         words_filtered = [e.lower() for e in words]
         documents.append((words_filtered, sentiment))
-    return documents 
+    return documents
 
-def documentFeatures(taggedtext): # seems correct
-    # print taggedtext
-    document_words = set(taggedtext)
+def textClean(s):
+    remove = ['\\t','\\n','  ']
+    # s = s.replace(i, Noneunct)
+
+    for i in remove:
+        s = re.sub(i,'',s)
+    s = s.lower()
+    s = s.split()
+    return s
+
+def classify(raw):
+    # raw = str(raw_input('enter : '))
+    document_words = set(textClean(raw))
+    # print document_words
     features = {}
-    for word in word_features:
-        features['contains(%s)' % word] = (word in document_words)
-    return features
+    value = 0
+    num = 0
+    for word in document_words:
+        antonyms = []
+        synonyms = []
+        for i,j in enumerate(wordnet.synsets(word)):
+            for x in j.lemmas():
+                antonyms += [y.name() for y in x.antonyms() if not y.name() in antonyms]
+            synonyms += [y.name() for y in j.lemmas() if not y.name() in synonyms]
+        total = synonyms + antonyms
+        # print word, ':', total
+        for w in synonyms:
+            num += 1
+            if word in positive:
+                value += 1
+            elif word in negative:
+                value -= 1
+        for w in antonyms:
+            num += 1
+            if word in positive:
+                value -= 1
+            elif word in negative:
+                value += 1
 
-def getMax(a,b,c):
-    if a>b:
-        if a>c:
-            return a, 0
-        else:
-            return c, 1
+    # print '%0.5f' % (float(value)/float(num))
+    if value==0:
+        return 0
     else:
-        if b>c:
-            return b, -1
-        else:
-            return c, 1
+        return '%0.5f' % (float(value)/float(num))
 
-taggedtext = getTaggedWords()
-word_features = getWords(taggedtext)
-
-def trainClassifier():
-    
-    random.shuffle(taggedtext)
-
-    # print taggedtext
-    featureset = nltk.classify.apply_features(documentFeatures, taggedtext)
-    # print len(featureset)
-    training_set = featureset[100:]
-    test_set = featureset[:100]
-    classifier = nltk.NaiveBayesClassifier.train(training_set)
-    print 'Accuracy :', nltk.classify.accuracy(classifier, test_set)
-    classifier.show_most_informative_features(30)
-    return classifier
-
-def getSenti(stmt, classifier):
+def getSenti(stmt):
     print 'Getting Sentiment ... '
     # print stmt
     count_neg =0
@@ -156,17 +152,16 @@ def getSenti(stmt, classifier):
     count_neutral = 0
     for s in stmt:
         # print s
-        s = textClean(s)
+        # s = textClean(s)
         if s!=' ':
-            out = classifier.classify(documentFeatures(s))
-            if out < -0.4:
+            out = classify(s)
+            # print out
+            if float(out) < float(0.0):
                 count_neg += 1
-            elif out > 0.4:
+            elif float(out) > float(0.0):
                 count_pos += 1
             else:
                 count_neutral += 1
             # print s, out
-
+    print count_neutral, count_neg, count_pos, len(stmt)
     return count_neutral, count_neg, count_pos, len(stmt)
-
-# word disambigustiojn

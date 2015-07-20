@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'robe.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOME': '/var/run/mysql',
+        # 'HOME': '/var/run/mysql',
         'NAME': 'flamingtribble',
-        'USER': 'root',
+        'USER': 'antriksh5235',
         'PASSWORD': 'tribble',
-        'HOST': '',
+        'HOST': 'antriksh5235.mysql.pythonanywhere-services.com',
         'PORT': '',
     }
 }

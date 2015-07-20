@@ -1,16 +1,60 @@
 {% extends "layout.html" %}
-{% block about %}
+{% block content %}
 <head>
+<title>
+  View Statistics | Flaming Tribble
+</title>
   {% load staticfiles %}
   <link rel="stylesheet" href="{% static 'css/search.css'%}" type="text/css" media="screen">
+  <link rel="stylesheet" href="{% static 'css/stats.css'%}" type="text/css" media="screen">
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+  </script>
+
 
 </head>
-            <div>
-                <h1> <br>
-                  <span class="typer-line">ABOUT</span>
-                  <br>
-                     
+<script type="text/javascript">
+
+function container() {
+  x = document.getElementById("container");
+  x.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+  y = document.getElementById("menu_select");
+  y.style.visibility = (x.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+</script>
+            
+          	<h1 style="min-height:65px"> 
+                  <nav class="navbar-search navbar-top" style='top: -14px;min-height: 13%;'> 
+                  <form style="color:black;font-size:50px">The MIT License (MIT)
+                  </form></nav>                     
                     </h1>
+
+			<div id="page1" class="page">
+				<div style="z-index:1000; min-height:100%; min-width:80%; margin-top:10%;margin-left:10%;margin-right:10%;font-size:30px">
+				<div>Copyright © 2015 Antriksh Agarwal</div><br>
+<div>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+</div><br><div>
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+</div><br><div>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</div>
+
+              </div>
               </div>
 
+              
 {% endblock %}
