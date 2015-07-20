@@ -16,6 +16,7 @@ import thread
 from tribble.forms import SearchForm
 from django.core.exceptions import ObjectDoesNotExist
 from graphos.renderers import gchart
+from robe.settings import BASE_DIR
 from tribble.twitter.sentiment import *
 import tweepy
 
@@ -46,7 +47,9 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-with open('countries.txt','r') as f:
+country = os.path.join(BASE_DIR,'countries.txt')
+
+with open(country,'r') as f:
     english = f.read().split('\n')
 
 def privacy(request):
