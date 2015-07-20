@@ -6,6 +6,7 @@ from tribble.twitter.sentiment import *
 from graphos.sources.model import SimpleDataSource
 from graphos.renderers import gchart
 import sys
+from robe.settings import BASE_DIR
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -20,7 +21,9 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-with open('countries.txt','r') as f:
+country = os.path.join(BASE_DIR,'countries.txt')
+
+with open(country,'r') as f:
     english = f.read().split('\n')
 
 def import_tweets_india():
