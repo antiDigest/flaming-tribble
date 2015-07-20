@@ -81,13 +81,13 @@ WSGI_APPLICATION = 'robe.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        # 'HOME': '/var/run/mysql',
-        'NAME': 'flamingtribble',
-        'USER': 'antriksh5235',
-        'PASSWORD': 'tribble',
-        'HOST': 'antriksh5235.mysql.pythonanywhere-services.com',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        # # 'HOME': '/var/run/mysql',
+        'NAME': os.path.join(BASE_DIR,'db.sqlite3'),
+        # 'USER': 'antriksh5235',
+        # 'PASSWORD': 'tribble',
+        # 'HOST': 'antriksh5235.mysql.pythonanywhere-services.com',
+        # 'PORT': '',
     }
 }
 
