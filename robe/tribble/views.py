@@ -144,7 +144,7 @@ def search(request):
                     k = search._json['user']
                     statement += [textCleaner(search.text)]
                 senti_neut, senti_neg, senti_pos, tot = getSenti(statement)
-                data = [['Sentiment','Percentage'],['Negative',senti_neg],['Positive',senti_pos],['Neutral',senti_neut],]
+                data = [['Sentiment','Percentage'],['Positive',senti_pos],['Negative',senti_neg],['Neutral',senti_neut],]
                 piechart = gchart.PieChart(SimpleDataSource(data=data))
                 
                 data=[['Time','Favourties'],]
