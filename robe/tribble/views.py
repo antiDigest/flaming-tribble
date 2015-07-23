@@ -97,13 +97,17 @@ def stats(request):
     chart2 = gchart.LineChart(SimpleDataSource(data=data2))
     return render(request,'statistics.html',{'chart':getchart(), 'charti':chart2})
     
-def fetch(request):
+def fetch_india(request):
     import_tweets.import_tweets_india()
     words_i = Words_India.objects.all().order_by('-id')[:50]
 
-    import_tweets.import_tweets_global()
-
     return render(request,'trending.html',{'word':words_i,'form':SearchForm(), 'value':'India'})
+
+def fetch_global(request):
+    import_tweets.import_tweets_global()
+    words_i = Words_Global.objects.all().order_by('-id')[:50]
+
+    return render(request,'trending.html',{'word':words_i,'form':SearchForm(), 'value':'Global'})
 
 def noRedundant(request):
     print 'Removing global ...'
@@ -190,7 +194,7 @@ def show(request,value,word):
                 k = search._json['user']
                 statement += [textCleaner(search.text)]
             senti_neut, senti_neg, senti_pos, tot = getSenti(statement)
-            data = [['Sentiment','Percentage'],['Negative',senti_neg],['Positive',senti_pos],['Neutral',senti_neut],]
+            data = [['Sentiment','Percentage'],['Positive',senti_pos],['Negative',senti_neg],['Neutral',senti_neut],]
             piechart = gchart.PieChart(SimpleDataSource(data=data))
             
             data=[['Time','Favourties'],]

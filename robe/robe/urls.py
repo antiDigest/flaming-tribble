@@ -25,7 +25,8 @@ urlpatterns = [
     url(r'^search/$', views.search , name='search' ),
     url(r'^search/(?P<value>(India|Global))/(?P<word>.*)$', views.show , name='show' ),
     url(r'^statistics[?/]$', views.stats , name='stats' ),
-    url(r'^live_trends[?/]$', views.fetch , name='fetch' ),
+    url(r'^live_trends/India[?/]$', views.fetch_india , name='fetch_india' ),
+    url(r'^live_trends/Global[?/]$', views.fetch_global , name='fetch_global' ),
     url(r'^privacy[?/]$', views.privacy , name='privacy' ),
     url(r'^redundant_removal[?/]$', views.noRedundant , name='noRedundant' ),
 ]

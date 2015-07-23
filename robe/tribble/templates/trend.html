@@ -73,7 +73,10 @@ function showchart(value) {
               <img href="#" class="close" src="{% static 'images/close_overlay.png'%}" style="position:relative" onclick="container()" >
                 <h4>NAVIGATE</h4>
                   <ul>
-                  <li><a href="{% url 'fetch' %}" >+ FETCH LIVE TRENDS</a>
+                  <li><a href="{% url 'fetch_india' %}" >+ FETCH INDIA TRENDS</a>
+                    
+                  </li>
+                  <li><a href="{% url 'fetch_global' %}" >+ FETCH GLOBAL TRENDS</a>
                     
                   </li>
                   <li><a href="{% url 'noRedundant' %}" >+ Remove Redundancy</a>
