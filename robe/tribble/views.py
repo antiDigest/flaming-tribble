@@ -181,9 +181,9 @@ def search(request):
             # print template.format(type(ex).__name__, ex.args)
             return HttpResponse('No connection to the internet was found')
 
-        
-
-def show(request,value,word):
+def show(request,value):
+    word = request.GET.get('q')
+    print word
     try:
         searches = api.search(word,lang="en",since='2015-01-01',until=time.strftime('%Y-%m-%d'),count=100)
         linesearch = api.search(word,lang="en",since='2015-01-01',until=time.strftime('%Y-%m-%d')\
@@ -223,10 +223,10 @@ def show(request,value,word):
             return render(request,'search.html',{'query':word,'form':SearchForm(), 'trend':None, \
             'value':value, 'piechart':None, 'linechart':None, 'related':None})
         
-    except tweepy.TweepError:
-        # print template.format(type(ex).__name__, ex.args)
+    except tweepy.TweepError as e:
+        print e
+        if '404' in e:
+            return HttpResponse('Twitter returned 404 error')    
         return HttpResponse('Unable to connect to the internet')
 
-
-    
     

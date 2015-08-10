@@ -146,7 +146,7 @@ def classify(raw):
     if value==0:
         return 0
     else:
-        return '%0.5f' % (float(value)/float(num))
+        return value
 
 def getSenti(stmt):
     print 'Getting Sentiment ... '
@@ -160,12 +160,12 @@ def getSenti(stmt):
         if s!=' ':
             out = classify(s)
             # print out
-            if float(out) < float(0.0):
+            if out < 0:
                 count_neg += 1
-            elif float(out) > float(0.0):
+            elif out > 0.0:
                 count_pos += 1
             else:
                 count_neutral += 1
             # print s, out
-    print count_neutral, count_neg, count_pos, len(stmt)
+    # print count_neutral, count_neg, count_pos, len(stmt)
     return count_neutral, count_neg, count_pos, len(stmt)

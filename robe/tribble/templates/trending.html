@@ -16,14 +16,16 @@
              </table>
              <hr>
              <br>
-             {% if query %}
-             <div class='display_box' style="text-align:center">Searched for '{{ query }}'</div>
-             {% endif %}
 	            {% for words in word %}
 		            <div class='display_box'>
 		            	<table>
                    <tr>
-                     <td class='trend_keyword trend'><a href="/search/{{ value }}/{{ words.word_name }}" style="font-size:15px;margin-left:10px" method='POST'>{{ words.word_name }}</a></td>
+                   {% if '#' in words.word_name %}
+                     <td class='trend_keyword trend'><a href="/search/{{ value }}/?q={{ words.word_name[1:] }}" style="font-size:15px;margin-left:10px" method='get'>{{ words.word_name }}</a></td>
+                    {% else %}
+                      <td class='trend_keyword trend'><a href="/search/{{ value }}/?q={{ words.word_name }}" style="font-size:15px;margin-left:10px" method='get'>{{ words.word_name }}</a></td>
+                    {% endif %}
+
                      <td class="trend_location trend">{{ words.word_from }}</td>                     
 
                      <td class="trend_location trend">{{ words.date_time }} </td>
